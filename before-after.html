@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Healthyfy Hosting Move</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap">
+<style>
+/* single column: cost bar, then before and after architecture diagrams */
+:root { --bg:#f5f8f6; --fg:#16231d; --muted:#5b6b63; --card:#ffffff; --line:#d9e2dd; --old:#b9c5bf; --new:#1d7a56; --display:"Space Grotesk", "Segoe UI", system-ui, sans-serif; --body:"Inter", "Segoe UI", system-ui, sans-serif; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#0f1613; --fg:#e3ece7; --muted:#9bb0a6; --card:#16201b; --line:#2a3832; --old:#46554e; --new:#5cc79b; color-scheme:dark } }
+:root[data-theme="dark"] { --bg:#0f1613; --fg:#e3ece7; --muted:#9bb0a6; --card:#16201b; --line:#2a3832; --old:#46554e; --new:#5cc79b; color-scheme:dark }
+* { box-sizing:border-box }
+body { background:var(--bg); color:var(--fg); font:16px/1.6 var(--body); padding-block:40px 64px; padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px)) }
+main { max-width:920px; margin:0 auto; display:flex; flex-direction:column; gap:24px }
+h1 { font:600 2rem/1.2 var(--display); margin:0; text-wrap:balance }
+h2 { font:600 1.05rem/1.3 var(--display); margin:0 0 12px; color:var(--muted) }
+p { margin:0; max-width:65ch }
+.card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:20px; min-width:0 }
+.diagram { overflow-x:auto }
+.diagram pre.mermaid { margin:0; background:transparent; text-align:center }
+svg.bar { width:100%; height:auto; display:block }
+svg.bar text { fill:var(--fg); font-family:var(--body) }
+.small { font-size:.85rem; color:var(--muted); margin-top:10px }
+</style>
+
+</head>
+<body>
+<main>
+  <h1>Healthyfy Hosting Move</h1>
+  <p>Our apps used to run in many separate places. Now almost everything runs in one Kubernetes setup on staging, with fewer databases and a smaller bill. The live app will get a copy of the same setup at launch.</p>
+
+  <section class="card">
+    <h2>Before</h2>
+    <div class="diagram">
+<pre class="mermaid">
+flowchart LR
+  users([App, coaches, team])
+  subgraph AKS["Kubernetes, 1 small server"]
+    api1[API]
+    portal1[Coach portal]
+  end
+  subgraph AS["App Service, 3 plans"]
+    strapi1[Strapi]
+    lf1[Langfuse]
+    bot1[Old chatbot]
+  end
+  subgraph VM["Virtual machine"]
+    mat1[Matomo]
+  end
+  subgraph CA["Container Apps"]
+    mem1[Team memory]
+    cont1[Content tools]
+  end
+  subgraph DB["5 database servers"]
+    my57[(MySQL 5.7)]
+    pg1[(Postgres Strapi)]
+    pg2[(Postgres Langfuse)]
+    pg3[(Postgres memory)]
+    redis[(Redis, unused)]
+  end
+  users --> api1 & portal1 & strapi1 & lf1 & mat1 & mem1 & cont1
+  api1 --> my57
+  mat1 --> my57
+  strapi1 --> pg1
+  lf1 --> pg2
+  mem1 --> pg3
+  lf1 -.-> redis
+</pre>
+    </div>
+    <p class="small">Secrets lived inside the cluster, there were two image registries, and testing and the live app shared one database server.</p>
+  </section>
+
+  <section class="card">
+    <h2>After</h2>
+    <div class="diagram">
+<pre class="mermaid">
+flowchart LR
+  users([App, coaches, team])
+  gh[GitHub Actions] -- deploys with no downtime --> ing
+  subgraph AKS["Kubernetes, 2 to 4 servers, grows when busy"]
+    ing{{One front door with HTTPS}}
+    subgraph STG["staging"]
+      api2[API x2 + worker]
+      portal2[Coach portal x2]
+      strapi2[Strapi x2]
+      lf2[Langfuse]
+      mat2[Matomo]
+    end
+    subgraph TOOLS["tools"]
+      mem2[Team memory]
+    end
+  end
+  kv[[Key Vault: all secrets]]
+  subgraph DB["2 database servers"]
+    my80[(MySQL 8)]
+    pgs[(Shared Postgres)]
+  end
+  users --> ing
+  ing --> api2 & portal2 & strapi2 & lf2 & mat2 & mem2
+  kv -.-> AKS
+  api2 --> my80
+  mat2 --> my80
+  strapi2 --> pgs
+  lf2 --> pgs
+  mem2 --> pgs
+  users --> cont2[Content tools, unchanged]
+</pre>
+    </div>
+    <p class="small">Azure Functions, Firestore and Cosmos DB are unchanged. The live app gets its own copy of this setup at launch.</p>
+  </section>
+
+  <section class="card">
+    <h2>Monthly cost (EUR)</h2>
+    <svg class="bar" viewBox="0 0 640 170" role="img" aria-label="Monthly cost: before 565 euros, after about 450 euros">
+      <text x="0" y="48" font-size="15">Before</text>
+      <rect x="80" y="28" width="520" height="30" rx="4" fill="var(--old)"/>
+      <text x="590" y="49" font-size="15" text-anchor="end" font-weight="600">565</text>
+      <text x="0" y="118" font-size="15">After</text>
+      <rect x="80" y="98" width="414" height="30" rx="4" fill="var(--new)"/>
+      <text x="504" y="119" font-size="15" font-weight="600">~450</text>
+      <text x="80" y="160" font-size="12" fill="var(--muted)">About 115 EUR less each month, roughly 20%</text>
+    </svg>
+    <p class="small">"Before" is the real Azure bill for Nov 13 to 19. "After" adds the new servers at Azure list price, so it is an estimate until a full month is billed.</p>
+  </section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script>
+mermaid.initialize({startOnLoad:true, securityLevel:"strict", theme: matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "neutral", fontFamily:"Inter, Segoe UI, system-ui, sans-serif"});
+</script>
+</body>
+</html>

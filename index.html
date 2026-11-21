@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Healthyfy Hosting Plan</title>
+<style>
+:root { --bg:#f6f8f7; --fg:#18241f; --muted:#5e6d66; --card:#fff; --line:#dbe3df; --old:#c9d2ce; --new:#1f7a5a; }
+@media (prefers-color-scheme: dark) { :root { --bg:#0f1613; --fg:#e4ece8; --muted:#9db0a7; --card:#17211c; --line:#2a3832; --old:#3a4842; --new:#5cc79b; } }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--fg); font:17px/1.6 "Segoe UI", system-ui, sans-serif; padding:40px 16px 64px; }
+main { max-width:720px; margin:0 auto; display:flex; flex-direction:column; gap:28px; }
+h1 { font-size:2rem; margin:0; }
+h2 { font-size:1.1rem; margin:0 0 12px; color:var(--muted); font-weight:600; }
+p { margin:0; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:20px; }
+svg { width:100%; height:auto; display:block; }
+svg text { fill:var(--fg); font-family:"Segoe UI", system-ui, sans-serif; }
+.small { font-size:0.85rem; color:var(--muted); margin-top:10px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Healthyfy Hosting Plan</h1>
+  <p>Today our apps are spread over 7 kinds of hosting, and testing and the live app share one small server. We move everything onto one setup that we can copy for the live app at launch. That means no downtime on updates, room for 1,000 kids, and a smaller bill.</p>
+
+  <div class="card">
+    <h2>Before and after</h2>
+    <svg viewBox="0 0 640 230" role="img" aria-label="Today: seven separate hosting types and one shared server. After: one setup for staging, copied for the live app.">
+      <text x="10" y="22" font-size="15" font-weight="700">Today</text>
+      <g font-size="12">
+        <rect x="10" y="36" width="80" height="34" rx="6" fill="var(--old)"/><text x="50" y="58" text-anchor="middle">AKS</text>
+        <rect x="100" y="36" width="80" height="34" rx="6" fill="var(--old)"/><text x="140" y="58" text-anchor="middle">Functions</text>
+        <rect x="190" y="36" width="80" height="34" rx="6" fill="var(--old)"/><text x="230" y="58" text-anchor="middle">App Service</text>
+        <rect x="10" y="78" width="80" height="34" rx="6" fill="var(--old)"/><text x="50" y="100" text-anchor="middle">Container Apps</text>
+        <rect x="100" y="78" width="80" height="34" rx="6" fill="var(--old)"/><text x="140" y="100" text-anchor="middle">VM</text>
+        <rect x="190" y="78" width="80" height="34" rx="6" fill="var(--old)"/><text x="230" y="100" text-anchor="middle">5 databases</text>
+        <rect x="10" y="120" width="260" height="34" rx="6" fill="none" stroke="var(--muted)" stroke-dasharray="4 3"/><text x="140" y="142" text-anchor="middle">Testing and live app on one server</text>
+      </g>
+      <path d="M290 95 H340" stroke="var(--muted)" stroke-width="2" fill="none"/>
+      <path d="M332 88 L342 95 L332 102" stroke="var(--muted)" stroke-width="2" fill="none"/>
+      <text x="360" y="22" font-size="15" font-weight="700">After</text>
+      <g font-size="13">
+        <rect x="360" y="36" width="270" height="54" rx="8" fill="var(--new)"/>
+        <text x="495" y="60" text-anchor="middle" fill="var(--card)" style="fill:var(--card)" font-weight="700">Staging</text>
+        <text x="495" y="78" text-anchor="middle" style="fill:var(--card)">one setup, grows when busy</text>
+        <rect x="360" y="100" width="270" height="54" rx="8" fill="none" stroke="var(--new)" stroke-width="2"/>
+        <text x="495" y="124" text-anchor="middle" font-weight="700">Live app</text>
+        <text x="495" y="142" text-anchor="middle">same setup, copied at launch</text>
+      </g>
+      <text x="320" y="205" font-size="12" text-anchor="middle" style="fill:var(--muted)">Updates go through GitHub only, with no downtime</text>
+    </svg>
+  </div>
+
+  <div class="card">
+    <h2>Monthly cost (EUR)</h2>
+    <svg viewBox="0 0 640 150" role="img" aria-label="Today 542 euros per month, after 410 euros per month.">
+      <g font-size="14">
+        <text x="0" y="45">Today</text>
+        <rect x="80" y="24" width="500" height="32" rx="6" fill="var(--old)"/>
+        <text x="590" y="46" font-weight="700">542</text>
+        <text x="0" y="105">After</text>
+        <rect x="80" y="84" width="378" height="32" rx="6" fill="var(--new)"/>
+        <text x="468" y="106" font-weight="700">410</text>
+      </g>
+    </svg>
+    <p class="small">"After" is an estimate for staging. The live app is added at launch.</p>
+  </div>
+</main>
+</body>
+</html>
